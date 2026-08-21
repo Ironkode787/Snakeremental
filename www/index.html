@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080b14">
+<title>Snakeremental</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- top currency bar -->
+  <header id="topbar">
+    <div class="cur cur-gold"><span class="cur-ico">🪙</span><span id="goldVal">0</span></div>
+    <div class="cur cur-scales hidden" id="scalesBox"><span class="cur-ico">🐚</span><span id="scalesVal">0</span></div>
+    <div class="cur cur-eggs hidden" id="eggsBox"><span class="cur-ico">🥚</span><span id="eggsVal">0</span></div>
+  </header>
+
+  <!-- game canvas -->
+  <canvas id="game"></canvas>
+
+  <!-- in-run HUD -->
+  <div id="runHud" class="hidden">
+    <div id="comboWrap">
+      <div id="comboLabel">×1.0</div>
+      <div id="comboBar"><div id="comboFill"></div></div>
+    </div>
+    <div id="feverBar"><div id="feverFill"></div></div>
+    <div id="runGoldLabel">+0</div>
+    <div id="runBadges"></div>
+  </div>
+
+  <div id="runControls" class="hidden">
+    <button id="btnMirror" class="ctl hidden" title="Mirror Dimension">🪞</button>
+    <button id="btnSell" class="ctl hidden" title="Snake Oil">🧴<span id="sellVal"></span></button>
+    <button id="btnDash" class="ctl ctl-big hidden">⚡<div id="dashMeter"><div id="dashFill"></div></div></button>
+    <button id="btnPause" class="ctl">⏸</button>
+  </div>
+
+  <!-- d-pad (optional, toggled in settings) -->
+  <div id="dpad" class="hidden">
+    <button data-dir="up">▲</button>
+    <div><button data-dir="left">◀</button><button data-dir="right">▶</button></div>
+    <button data-dir="down">▼</button>
+  </div>
+
+  <!-- menu overlay -->
+  <div id="menu">
+    <div id="screen-home" class="screen">
+      <h1 class="logo">SNAKE<span>REMENTAL</span></h1>
+      <p class="tagline">eat · die · upgrade · repeat</p>
+      <button id="btnPlay" class="btn-play">▶ PLAY</button>
+      <div id="idleInfo" class="idle-info"></div>
+      <div id="homeStats" class="home-stats"></div>
+      <p class="hint" id="homeHint">Swipe to steer. Eat fast for combos. Skim your tail for danger bonuses.</p>
+    </div>
+
+    <div id="screen-tree" class="screen hidden">
+      <div id="branchTabs"></div>
+      <div id="branchInfo"></div>
+      <div id="nodeList"></div>
+    </div>
+
+    <div id="screen-nest" class="screen hidden">
+      <h2>🥚 The Nest</h2>
+      <p class="dim">Mystery Eggs drop while you play. Hatch them for random permanent boons.</p>
+      <div id="nestEggs"></div>
+      <button id="btnHatch" class="btn-big">HATCH 1 🥚</button>
+      <div id="boonList"></div>
+    </div>
+
+    <div id="screen-shed" class="screen hidden">
+      <h2>🐚 Shedding</h2>
+      <div id="shedInfo"></div>
+      <button id="btnShed" class="btn-big btn-danger">SHED YOUR SKIN</button>
+      <div id="ascendHint" class="dim"></div>
+    </div>
+
+    <div id="screen-stats" class="screen hidden">
+      <h2>📊 Stats</h2>
+      <div id="statList"></div>
+      <h2>⚙ Settings</h2>
+      <div class="setting"><span>Sound</span><button id="setSound" class="btn-toggle"></button></div>
+      <div class="setting"><span>On-screen D-pad</span><button id="setDpad" class="btn-toggle"></button></div>
+      <button id="btnReset" class="btn-big btn-danger">☠ HARD RESET (wipe save)</button>
+    </div>
+  </div>
+
+  <!-- bottom navigation -->
+  <nav id="nav">
+    <button data-screen="home" class="active">🎮<span>Play</span></button>
+    <button data-screen="tree">🌳<span>Tree</span><em id="navTreeDot" class="dot hidden"></em></button>
+    <button data-screen="nest">🥚<span>Nest</span><em id="navNestDot" class="dot hidden"></em></button>
+    <button data-screen="shed">🐚<span>Shed</span><em id="navShedDot" class="dot hidden"></em></button>
+    <button data-screen="stats">📊<span>More</span></button>
+  </nav>
+
+  <!-- modals -->
+  <div id="modalWrap" class="hidden">
+    <div id="modal"></div>
+  </div>
+
+  <div id="toasts"></div>
+</div>
+
+<script src="js/upgrades.js"></script>
+<script src="js/state.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
