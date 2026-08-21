@@ -86,7 +86,7 @@ function baseDerived() {
     startLen: 4,
     comboWindow: 3.5, comboPower: 0.10, comboFreeze: 0,
     feverReq: 12, feverDur: 6, feverMult: 3, eternalFever: false,
-    intervalMult: 1, bulletTime: 0, queue: 1, noGrow: 0, bounces: 0,
+    intervalMult: 1, bulletTime: 0, queue: 1, noGrow: 0, bounces: 0, dangerPower: 1,
     dash: false, dashFood: 1, dashTank: 1, oil: false, oilRate: 1,
     ouro: 0, shield: 0, phase: 0,
     luck: 1, critC: 0, critM: 2, eggC: 0.008,
