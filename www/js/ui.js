@@ -323,11 +323,13 @@ function spinWheel(runGold) {
   let idx = 0, ticks = 0;
   const totalTicks = 20 + ((target - 20) % WHEEL_SLICES.length + WHEEL_SLICES.length) % WHEEL_SLICES.length;
   function tick() {
-    document.querySelectorAll('.wslice').forEach(e => e.classList.remove('lit'));
-    $(`ws${idx % WHEEL_SLICES.length}`).classList.add('lit');
-    SFX.wheel();
+    // the modal may be gone (player hit AGAIN mid-spin) — keep the payout, skip the show
+    const slice = $(`ws${idx % WHEEL_SLICES.length}`);
     ticks++;
-    if (ticks <= totalTicks) {
+    if (slice && ticks <= totalTicks) {
+      document.querySelectorAll('.wslice').forEach(e => e.classList.remove('lit'));
+      slice.classList.add('lit');
+      SFX.wheel();
       idx++;
       setTimeout(tick, 40 + ticks * 9); // decelerating spin, ~2.5s total
     } else {
@@ -335,7 +337,8 @@ function spinWheel(runGold) {
       const bonus = Math.floor(runGold * (mult - 1));
       if (bonus > 0) addGold(bonus);
       save();
-      $('wheelResult').innerHTML = mult > 1
+      const out = $('wheelResult');
+      if (out) out.innerHTML = mult > 1
         ? `<b class="wheel-win">${label}! +${fmt(bonus)} 🪙</b>`
         : `<b class="dim">${label}… the house wins</b>`;
       if (mult >= 5) { SFX.fever(); }

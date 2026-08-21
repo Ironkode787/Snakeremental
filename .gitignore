@@ -8,6 +8,8 @@ android/captures/
 *.apk
 *.aab
 *.keystore
+*.jks
+android/keystore.properties
 
 # misc
 .DS_Store

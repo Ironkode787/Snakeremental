@@ -119,14 +119,20 @@ function spawnSnake2() {
 }
 
 function freeCell() {
-  for (let tries = 0; tries < 400; tries++) {
+  for (let tries = 0; tries < 200; tries++) {
     const x = Math.floor(Math.random() * Game.cols);
     const y = Math.floor(Math.random() * Game.rows);
     if (Game.snake.some(s => s.x === x && s.y === y)) continue;
     if (Game.foods.some(f => f.x === x && f.y === y)) continue;
     return { x, y };
   }
-  return null;
+  // crowded board: deterministic scan so we never falsely report "full"
+  const occ = new Set(Game.snake.map(s => s.x + ',' + s.y));
+  for (const f of Game.foods) occ.add(f.x + ',' + f.y);
+  for (let y = 0; y < Game.rows; y++)
+    for (let x = 0; x < Game.cols; x++)
+      if (!occ.has(x + ',' + y)) return { x, y };
+  return null; // board truly full
 }
 
 function runLuck() { return D.luck * (Game.cookieBuff === 'ck_luck' ? 3 : 1); }
@@ -152,8 +158,9 @@ function pickTier() {
 
 function spawnFood() {
   const pos = freeCell();
-  if (!pos) return;
+  if (!pos) return false;
   Game.foods.push({ x: pos.x, y: pos.y, tier: pickTier(), t: 0 });
+  return true;
 }
 
 // ---------------- input ----------------
@@ -466,7 +473,8 @@ function eatFood(fi) {
   // Déjà Chew: it happens again
   if (D.deja > 0 && Math.random() < D.deja) { g *= 2; labels.push('DÉJÀ CHEW'); }
 
-  g = Math.max(0, Math.floor(g));
+  g = Math.floor(g);
+  if (!isFinite(g) || g < 0) g = 0;
   earn(g, cellX(f.x), cellY(f.y), FOOD_TIERS[f.tier].color, `+${fmt(g)}`);
   for (const l of labels) floaterQueued(cellX(f.x), cellY(f.y), l, '#ffffff');
 
@@ -489,11 +497,14 @@ function eatFood(fi) {
     Game.shake = 14; SFX.fever();
   }
 
-  while (Game.foods.length < 1 + D.extraFood) spawnFood();
+  while (Game.foods.length < 1 + D.extraFood) {
+    if (!spawnFood()) break; // board can be genuinely full late-game
+  }
 }
 
 function earn(g, x, y, color, label) {
-  if (g <= 0) { if (label) floater(x, y, label, color); return; }
+  g = Math.floor(Number(g));
+  if (!isFinite(g) || g <= 0) { if (label) floater(x, y, label, color); return; }
   addGold(g);
   Game.runGold += g;
   if (label) floater(x, y, label, color);

@@ -26,7 +26,8 @@ function boot() {
 }
 
 function frame(ts) {
-  const dt = Math.min(0.1, (ts - lastFrame) / 1000 || 0.016);
+  // clamp: some devices hand back stale/backwards timestamps after sleep
+  const dt = Math.min(0.1, Math.max(0, (ts - lastFrame) / 1000 || 0.016));
   lastFrame = ts;
 
   if (Game.active && !Game.paused) {

@@ -50,7 +50,30 @@ function load() {
   } else {
     S = d;
   }
+  sanitizeState();
   recalc();
+}
+
+// Repair any non-finite / corrupted numbers (JSON stores NaN and Infinity
+// as null, and one bad value would otherwise poison the save forever).
+function safeNum(v, dflt) {
+  v = Number(v);
+  return isFinite(v) ? v : dflt;
+}
+
+function sanitizeState() {
+  S.gold = Math.max(0, safeNum(S.gold, 0));
+  S.lifetimeGold = Math.max(0, safeNum(S.lifetimeGold, 0));
+  S.goldSinceShed = Math.max(0, safeNum(S.goldSinceShed, 0));
+  S.scales = Math.max(0, safeNum(S.scales, 0));
+  S.eggs = Math.max(0, safeNum(S.eggs, 0));
+  S.prestiges = Math.max(0, Math.floor(safeNum(S.prestiges, 0)));
+  if (!S.up || typeof S.up !== 'object') S.up = {};
+  for (const k of Object.keys(S.up)) S.up[k] = Math.max(0, Math.floor(safeNum(S.up[k], 0)));
+  if (!S.boons || typeof S.boons !== 'object') S.boons = {};
+  for (const k of Object.keys(S.boons)) S.boons[k] = Math.max(0, Math.floor(safeNum(S.boons[k], 0)));
+  for (const k of Object.keys(S.stats)) S.stats[k] = Math.max(0, safeNum(S.stats[k], 0));
+  S.lastSeen = safeNum(S.lastSeen, Date.now());
 }
 
 function upLvl(id) { return S.up[id] || 0; }
@@ -180,6 +203,9 @@ function offlineGains() {
 }
 
 function addGold(g) {
+  // hard gate: nothing non-finite may ever enter the economy
+  g = Math.floor(Number(g));
+  if (!isFinite(g) || g <= 0) return;
   S.gold += g;
   S.lifetimeGold += g;
   S.goldSinceShed += g;
